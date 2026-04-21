@@ -23,14 +23,14 @@ export default function DashboardPage() {
       <div className="space-y-6">
         {/* Greeting */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-gray-900">
             Good {getTimeOfDay()},{' '}
-            <span className="text-primary-600 dark:text-primary-400">
+            <span className="text-primary-600">
               {user?.firstName ?? 'there'}
             </span>{' '}
             👋
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm text-gray-500 mt-1">
             Here's what's happening across your modules today.
           </p>
         </div>
@@ -124,7 +124,7 @@ export default function DashboardPage() {
 
           {/* Weather widget */}
           <div>
-            <WeatherCard cityName="Berlin, DE" latitude={52.52} longitude={13.41} />
+            <WeatherCard cityName="New Delhi, India" latitude={28.6139} longitude={77.209} />
           </div>
         </div>
 

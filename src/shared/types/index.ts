@@ -60,11 +60,34 @@ export interface CurrentWeather {
   time: string;
 }
 
+export interface CurrentWeatherData {
+  time: string;
+  temperature_2m: number;
+  relative_humidity_2m: number;
+  weather_code: number;
+  wind_speed_10m: number;
+  wind_direction_10m: number;
+}
+
 export interface WeatherResponse {
   latitude: number;
   longitude: number;
   timezone: string;
-  current_weather: CurrentWeather;
+  current: CurrentWeatherData;
+}
+
+export interface GeocodingResult {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  country: string;
+  country_code?: string;
+  admin1?: string;
+}
+
+export interface GeocodingResponse {
+  results?: GeocodingResult[];
 }
 
 // ─── Auth (DummyJSON) ─────────────────────────────────────────────────────────

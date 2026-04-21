@@ -3,9 +3,13 @@ import { QUERY_KEYS, APP_CONFIG } from '@/shared/constants';
 import { weatherService } from '../services/weatherService';
 import type { WeatherParams } from '../services/weatherService';
 
+// Delhi, India as default
+const DEFAULT_LAT = 28.6139;
+const DEFAULT_LON = 77.209;
+
 export function useWeather(params: WeatherParams = {}) {
-  const lat = params.latitude ?? (Number(import.meta.env.VITE_DEFAULT_LATITUDE) || 52.52);
-  const lon = params.longitude ?? (Number(import.meta.env.VITE_DEFAULT_LONGITUDE) || 13.41);
+  const lat = params.latitude ?? DEFAULT_LAT;
+  const lon = params.longitude ?? DEFAULT_LON;
 
   return useQuery({
     queryKey: QUERY_KEYS.WEATHER(lat, lon),

@@ -13,4 +13,7 @@ export const API_ENDPOINTS = {
 
   // Weather (Open Meteo)
   FORECAST: '/forecast',
+
+  // Geocoding (Open-Meteo)
+  GEOCODING_SEARCH: '/search',
 } as const;

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Wind, Thermometer, Navigation, RefreshCw, Clock } from 'lucide-react';
+import { Wind, Navigation, RefreshCw, Clock, Droplets } from 'lucide-react';
 import { useWeather } from '../hooks/useWeather';
 import { Skeleton } from '@/shared/components/Skeleton';
 import { ErrorState } from '@/shared/components/ErrorState';
@@ -14,11 +14,20 @@ const WMO_CODES: Record<number, { label: string; emoji: string }> = {
   45: { label: 'Foggy', emoji: '🌫' },
   48: { label: 'Icy fog', emoji: '🌫' },
   51: { label: 'Light drizzle', emoji: '🌦' },
+  53: { label: 'Drizzle', emoji: '🌦' },
+  55: { label: 'Heavy drizzle', emoji: '🌦' },
   61: { label: 'Light rain', emoji: '🌧' },
   63: { label: 'Moderate rain', emoji: '🌧' },
+  65: { label: 'Heavy rain', emoji: '🌧' },
   71: { label: 'Light snow', emoji: '❄️' },
+  73: { label: 'Moderate snow', emoji: '❄️' },
+  75: { label: 'Heavy snow', emoji: '❄️' },
   80: { label: 'Rain showers', emoji: '🌦' },
+  81: { label: 'Rain showers', emoji: '🌦' },
+  82: { label: 'Heavy showers', emoji: '🌧' },
   95: { label: 'Thunderstorm', emoji: '⛈' },
+  96: { label: 'Thunderstorm', emoji: '⛈' },
+  99: { label: 'Heavy thunderstorm', emoji: '⛈' },
 };
 
 function getWeatherInfo(code: number) {
@@ -29,17 +38,17 @@ interface StatBadgeProps {
   icon: React.ReactNode;
   label: string;
   value: string;
-  color: string;
+  colorClass: string;
 }
-function StatBadge({ icon, label, value, color }: StatBadgeProps) {
+function StatBadge({ icon, label, value, colorClass }: StatBadgeProps) {
   return (
-    <div className={`flex items-center gap-3 ${color} rounded-2xl p-4`}>
-      <div className="h-10 w-10 bg-white/30 rounded-xl flex items-center justify-center">
+    <div className={`flex items-center gap-3 ${colorClass} rounded-2xl p-4`}>
+      <div className="h-9 w-9 bg-white/25 rounded-xl flex items-center justify-center flex-shrink-0">
         {icon}
       </div>
       <div>
-        <p className="text-xs font-medium opacity-80">{label}</p>
-        <p className="text-xl font-bold">{value}</p>
+        <p className="text-xs font-medium opacity-75">{label}</p>
+        <p className="text-lg font-bold leading-tight">{value}</p>
       </div>
     </div>
   );
@@ -51,7 +60,7 @@ interface WeatherCardProps {
   longitude?: number;
 }
 
-export function WeatherCard({ cityName = 'Berlin, DE', latitude, longitude }: WeatherCardProps) {
+export function WeatherCard({ cityName = 'New Delhi, India', latitude, longitude }: WeatherCardProps) {
   const { data, isLoading, isError, refetch, isFetching, dataUpdatedAt } = useWeather({
     latitude,
     longitude,
@@ -74,23 +83,26 @@ export function WeatherCard({ cityName = 'Berlin, DE', latitude, longitude }: We
     return <ErrorState onRetry={() => refetch()} />;
   }
 
-  const { current_weather: w } = data;
-  const info = getWeatherInfo(w.weathercode);
+  const w = data.current;
+  const info = getWeatherInfo(w.weather_code);
   const lastUpdated = dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleTimeString() : '—';
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card p-6 space-y-5"
+      className="card p-6 space-y-4"
     >
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{cityName}</p>
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-0.5">
+          <p className="text-xs font-medium text-gray-500">{cityName}</p>
+          <h3 className="text-xl font-bold text-gray-900 mt-0.5">
             {info.emoji} {info.label}
           </h3>
+          <p className="text-3xl font-light text-gray-900 mt-1">
+            {Math.round(w.temperature_2m)}°C
+          </p>
         </div>
         <Button
           variant="ghost"
@@ -104,39 +116,36 @@ export function WeatherCard({ cityName = 'Berlin, DE', latitude, longitude }: We
       </div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <StatBadge
-          icon={<Thermometer className="h-5 w-5 text-white" />}
-          label="Temperature"
-          value={`${w.temperature}°C`}
-          color="bg-gradient-to-br from-orange-400 to-orange-500 text-white"
+          icon={<Droplets className="h-4.5 w-4.5 text-white" />}
+          label="Humidity"
+          value={`${w.relative_humidity_2m}%`}
+          colorClass="bg-gradient-to-br from-sky-400 to-blue-500 text-white"
         />
         <StatBadge
-          icon={<Wind className="h-5 w-5 text-white" />}
-          label="Wind Speed"
-          value={`${w.windspeed} km/h`}
-          color="bg-gradient-to-br from-cyan-500 to-cyan-600 text-white"
+          icon={<Wind className="h-4.5 w-4.5 text-white" />}
+          label="Wind"
+          value={`${Math.round(w.wind_speed_10m)} km/h`}
+          colorClass="bg-gradient-to-br from-primary-500 to-primary-600 text-white"
         />
       </div>
 
-      {/* Wind direction + coordinates */}
-      <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-        <div className="flex items-center gap-1.5">
+      {/* Footer */}
+      <div className="flex items-center gap-3 text-xs text-gray-400 pt-1">
+        <div className="flex items-center gap-1">
           <Navigation
-            className="h-3.5 w-3.5 text-primary-500"
-            style={{ transform: `rotate(${w.winddirection}deg)` }}
+            className="h-3 w-3 text-primary-400"
+            style={{ transform: `rotate(${w.wind_direction_10m}deg)` }}
           />
-          Wind direction: {w.winddirection}°
+          {w.wind_direction_10m}°
         </div>
-        <div className="flex items-center gap-1.5">
-          <Clock className="h-3.5 w-3.5 text-primary-500" />
-          Updated: {lastUpdated}
+        <div className="flex items-center gap-1">
+          <Clock className="h-3 w-3 text-primary-400" />
+          {lastUpdated}
         </div>
       </div>
-
-      <p className="text-xs text-gray-400 dark:text-gray-600">
-        Auto-refreshes every 30 seconds · Coordinates: {data.latitude}°N, {data.longitude}°E
-      </p>
     </motion.div>
   );
 }
+

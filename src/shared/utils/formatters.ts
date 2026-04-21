@@ -14,7 +14,8 @@ export function formatCompactNumber(value: number): string {
   }).format(value);
 }
 
-export function formatPercent(value: number): string {
+export function formatPercent(value: number | null | undefined): string {
+  if (value == null || !isFinite(value)) return '—';
   return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
 }
 
@@ -34,3 +35,4 @@ export function getInitials(name: string): string {
     .join('')
     .toUpperCase();
 }
+

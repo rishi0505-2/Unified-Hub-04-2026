@@ -5,6 +5,7 @@ export const QUERY_KEYS = {
   POST_COMMENTS: (postId: number) => ['comments', 'post', postId] as const,
   CRYPTO: (params: Record<string, unknown>) => ['crypto', params] as const,
   WEATHER: (lat: number, lon: number) => ['weather', lat, lon] as const,
+  GEOCODING: (query: string) => ['geocoding', query] as const,
 } as const;
 
 export const ROUTES = {

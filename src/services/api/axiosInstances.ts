@@ -30,6 +30,13 @@ export const weatherApiClient = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+// ─── Open-Meteo Geocoding ────────────────────────────────────────────────────
+export const geocodingApiClient = axios.create({
+  baseURL: 'https://geocoding-api.open-meteo.com/v1',
+  timeout: Number(import.meta.env.VITE_API_TIMEOUT) || 10000,
+  headers: { 'Content-Type': 'application/json' },
+});
+
 // ─── Request interceptor: attach Bearer token ────────────────────────────────
 function attachToken(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
   const token = useAuthStore.getState().token;
@@ -66,6 +73,6 @@ function handleResponseError(error: AxiosError) {
   return Promise.reject(error);
 }
 
-[authApiClient, jsonPlaceholderClient, cryptoApiClient, weatherApiClient].forEach((client) => {
+[authApiClient, jsonPlaceholderClient, cryptoApiClient, weatherApiClient, geocodingApiClient].forEach((client) => {
   client.interceptors.response.use((response) => response, handleResponseError);
 });

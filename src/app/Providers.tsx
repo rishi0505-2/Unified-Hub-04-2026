@@ -3,23 +3,16 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 import { queryClient } from './queryClient';
-import { useUIStore } from '@/store/uiStore';
 
 interface ProvidersProps {
   children: ReactNode;
 }
 
 function ThemeApplier({ children }: ProvidersProps) {
-  const theme = useUIStore((s) => s.theme);
-
   useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-  }, [theme]);
+    // Light mode only — ensure dark class is never active
+    document.documentElement.classList.remove('dark');
+  }, []);
 
   return <>{children}</>;
 }
